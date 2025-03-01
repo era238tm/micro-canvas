@@ -1,0 +1,36 @@
+body {
+    width: fit-content;
+    font-family: monospace;
+    padding: 24px;
+    display: flex;
+    gap: 32px;
+}
+
+aside {
+    height: fit-content;
+    padding: 24px;
+    border-radius: 4px;
+    border: 2px solid #68676c;
+    display: grid;
+    gap: 16px;
+}
+
+.input-block label {
+    margin: 4px 6px;
+    position: absolute;
+}
+
+.input-block input {
+    font-family: inherit;
+    font-size: 1.5em;
+    padding: 4px;
+    padding-top: 23px;
+}
+
+canvas {
+    background-color: #191919;
+    border-radius: 3px;
+    border: 24px solid #0f0f0f;
+    vertical-align: bottom;
+    position: relative;
+}
