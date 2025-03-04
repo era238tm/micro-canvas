@@ -1,0 +1,60 @@
+body {
+    width: fit-content;
+    font-family: monospace;
+    padding: 24px;
+    display: flex;
+    gap: 32px;
+}
+
+aside {
+    min-width: 243px;
+    height: fit-content;
+    padding: 24px;
+    border-radius: 4px;
+    border: 2px solid #68676c;
+}
+
+#start-state, #arrow-keys {
+    display: grid;
+    gap: 16px;
+}
+
+#start-state:not(:has(#maze-state)) {
+    display: none;
+}
+
+#arrow-keys {
+    padding-top: 16px;
+    border-top: 2px solid #858585;
+    margin-top: 16px;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#arrow-keys:only-child {
+    display: none;
+}
+
+.input-block label {
+    margin: 4px 6px;
+    position: absolute;
+}
+
+.input-block input {
+    width: -webkit-fill-available;
+    font-family: inherit;
+    font-size: 1.5em;
+    padding: 4px;
+    padding-top: 23px;
+}
+
+.input-block input[type=button] {
+    padding-block: 7px 8px;
+    cursor: pointer;
+}
+
+canvas {
+    border-radius: 4px;
+    border: 24px solid #0f0f0f;
+    vertical-align: bottom;
+    position: relative;
+}
