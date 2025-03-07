@@ -4,4 +4,5 @@
 | :-: | --------------------------------- | -------------------------------------------------------- |
 | 001 | [24h Clock](24h-clock/)           | <https://era238tm.github.io/micro-canvas/24h-clock>      |
 | 002 | [Maze Generator](maze-generator/) | <https://era238tm.github.io/micro-canvas/maze-generator> |
-| 003 | [Ulam Spiral](ulam-spiral/)       | <https://era238tm.github.io/micro-canvas/ulam-spiral>    |
+| 003 | [Spirograph](spirograph/)         | <https://era238tm.github.io/micro-canvas/spirograph>     |
+| 004 | [Ulam Spiral](ulam-spiral/)       | <https://era238tm.github.io/micro-canvas/ulam-spiral>    |
