@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ulam Spiral</title>
+
+    <link rel="stylesheet" href="./styles.css">
+    <script src="./scripts.js" defer></script>
+</head>
+
+<body>
+    <main>
+        <header>
+            <h1>Ulam Spiral</h1>
+        </header>
+
+        <aside class="controls">
+            <div class="input-block">
+                <label for="start">Start at:</label>
+                <input type="number" name="start" id="start" value="1" min="0">
+            </div>
+
+            <div class="group">
+                <input type="button" value="Center" id="center">
+                <input type="button" value="Reset" id="reset">
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="output-block">
+                <label for="density">Density:</label>
+                <output id="density" class="percentage">0</output>
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="group">
+                <span><kbd>Drag</kbd> to Pan</span>
+                <span><kbd>Scroll</kbd> to Zoom</span>
+            </div>
+        </aside>
+
+        <canvas width="640" height="640"></canvas>
+    </main>
+</body>
+
+</html>
