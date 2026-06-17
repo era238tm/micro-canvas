@@ -91,11 +91,18 @@ pane.addBinding(params, 'density', {
 })
 
 function resize() {
+    const dpr = window.devicePixelRatio || 1;
+
     params.offset.x += (window.innerWidth - width) / 2;
     params.offset.y += (window.innerHeight - height) / 2;
 
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
+    width = window.innerWidth;
+    height = window.innerHeight;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
+    ctx.scale(dpr, dpr);
 
     requestAnimationFrame(render);
 }
@@ -108,8 +115,8 @@ canvas.addEventListener('wheel', (event) => {
     event.preventDefault();
 
     const { offsetX, offsetY, deltaY } = event;
-    const zoomStrength = deltaY < 0 ? zoomFactor : 1 / zoomFactor;
 
+    const zoomStrength = deltaY < 0 ? zoomFactor : 1 / zoomFactor;
     const newScale = Math.max(2, Math.min(params.scale * zoomStrength, 32));
     const scaleChange = newScale / params.scale;
 
@@ -120,29 +127,78 @@ canvas.addEventListener('wheel', (event) => {
     requestAnimationFrame(render);
 }, { passive: false });
 
-let isDragging = false;
-let lastMousePos = null;
+const activePointers = new Map();
+let lastPointers = { center: null, spread: null };
 
-canvas.addEventListener('mousedown', (event) => {
-    isDragging = true;
-    lastMousePos = { x: event.clientX, y: event.clientY };
-    document.documentElement.classList.add('dragging');
+function getPointersMetrics(pointers) {
+    if (pointers.size === 0) return { center: null, spread: null };
+
+    const center = { x: 0, y: 0 };
+    for (const { x, y } of pointers.values()) {
+        center.x += x;
+        center.y += y;
+    }
+    center.x /= pointers.size;
+    center.y /= pointers.size;
+
+    let spread = 0;
+    for (const { x, y } of pointers.values()) {
+        spread += Math.hypot(x - center.x, y - center.y);
+    }
+    spread /= pointers.size;
+
+    return { center, spread : spread || null };
+}
+
+canvas.addEventListener('pointerdown', (event) => {
+    activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    lastPointers = getPointersMetrics(activePointers);
+
+    if (event.pointerType === 'mouse') {
+        document.documentElement.classList.add('dragging');
+    }
 });
 
-window.addEventListener('mousemove', (event) => {
-    if (!isDragging) return;
+window.addEventListener('pointermove', (event) => {
+    if (!activePointers.has(event.pointerId)) return;
 
-    params.offset.x += event.clientX - lastMousePos.x;
-    params.offset.y += event.clientY - lastMousePos.y;
-    lastMousePos = { x: event.clientX, y: event.clientY };
+    activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    const { center, spread } = getPointersMetrics(activePointers);
+
+    if (center && lastPointers.center) {
+        const dx = center.x - lastPointers.center.x;
+        const dy = center.y - lastPointers.center.y;
+
+        params.offset.x += dx;
+        params.offset.y += dy;
+    }
+
+    if (spread && lastPointers.spread) {
+        const zoomStrength = spread / lastPointers.spread;
+        const newScale = Math.max(2, Math.min(params.scale * zoomStrength, 32));
+        const scaleChange = newScale / params.scale;
+
+        params.offset.x += (center.x - params.offset.x) * (1 - scaleChange);
+        params.offset.y += (center.y - params.offset.y) * (1 - scaleChange);
+        params.scale = newScale;
+    }
+
+    lastPointers = { center, spread };
 
     requestAnimationFrame(render);
 });
 
-window.addEventListener('mouseup', () => {
-    isDragging = false;
-    document.documentElement.classList.remove('dragging');
-});
+function handlePointerUp(event) {
+    activePointers.delete(event.pointerId);
+    lastPointers = getPointersMetrics(activePointers);
+
+    if (event.pointerType === 'mouse') {
+        document.documentElement.classList.remove('dragging');
+    }
+}
+
+window.addEventListener('pointerup', handlePointerUp);
+window.addEventListener('pointercancel', handlePointerUp);
 
 resize();
 render();
